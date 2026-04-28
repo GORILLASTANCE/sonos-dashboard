@@ -1,0 +1,72 @@
+################################################################################
+# fonts.yaml
+# Font definitions — all using Roboto (clean, readable on 480x480)
+# MDI icons for play/pause/skip/volume/speaker buttons
+################################################################################
+
+font:
+  # UI labels — small
+  - file: "gfonts://Roboto"
+    id: font_sm
+    size: 16
+    bpp: 4
+
+  # Artist name, time labels
+  - file: "gfonts://Roboto"
+    id: font_md
+    size: 22
+    bpp: 4
+
+  # Track title
+  - file: "gfonts://Roboto@700"
+    id: font_lg
+    size: 28
+    bpp: 4
+
+  # Speaker picker room names
+  - file: "gfonts://Roboto@500"
+    id: font_picker
+    size: 26
+    bpp: 4
+
+  # Large volume / progress numbers
+  - file: "gfonts://Roboto@300"
+    id: font_xl
+    size: 48
+    bpp: 4
+
+  # MDI icon font — control buttons
+  # Glyphs used:
+  #   U+F04A  skip-previous
+  #   U+F04B  play
+  #   U+F04C  pause
+  #   U+F04D  stop
+  #   U+F051  skip-next
+  #   U+F028  volume-high
+  #   U+F027  volume-medium
+  #   U+F026  volume-off
+  #   U+F9C4  speaker (for picker button)
+  #   U+F060  arrow-left (back)
+  #   U+F00D  close / X
+  - file: "https://github.com/Templarian/MaterialDesign-Webfont/raw/master/fonts/materialdesignicons-webfont.ttf"
+    id: font_icons_36
+    size: 36
+    bpp: 4
+    glyphs: [
+      "\U000F04A",  # skip-previous
+      "\U000F04B",  # play
+      "\U000F04C",  # pause
+      "\U000F051",  # skip-next
+      "\U000F028",  # volume-high
+      "\U000F9C4",  # speaker
+      "\U000F0060", # arrow-left
+    ]
+
+  - file: "https://github.com/Templarian/MaterialDesign-Webfont/raw/master/fonts/materialdesignicons-webfont.ttf"
+    id: font_icons_24
+    size: 24
+    bpp: 4
+    glyphs: [
+      "\U000F9C4",  # speaker (small, for main page button)
+      "\U000F0060", # arrow-left
+    ]
