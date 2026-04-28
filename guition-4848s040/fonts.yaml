@@ -1,11 +1,11 @@
 ################################################################################
 # fonts.yaml
-# Font definitions — all using Roboto (clean, readable on 480x480)
-# MDI icons for play/pause/skip/volume/speaker buttons
+# Font definitions using Roboto + MDI icons
+# Glyphs specified as hex codepoint strings (ESPHome 2026.x compatible)
 ################################################################################
 
 font:
-  # UI labels — small
+  # UI labels - small
   - file: "gfonts://Roboto"
     id: font_sm
     size: 16
@@ -35,38 +35,34 @@ font:
     size: 48
     bpp: 4
 
-  # MDI icon font — control buttons
-  # Glyphs used:
-  #   U+F04A  skip-previous
-  #   U+F04B  play
-  #   U+F04C  pause
-  #   U+F04D  stop
-  #   U+F051  skip-next
-  #   U+F028  volume-high
-  #   U+F027  volume-medium
-  #   U+F026  volume-off
-  #   U+F9C4  speaker (for picker button)
-  #   U+F060  arrow-left (back)
-  #   U+F00D  close / X
-  - file: "https://github.com/Templarian/MaterialDesign-Webfont/raw/master/fonts/materialdesignicons-webfont.ttf"
+  # MDI icons - 36px (main controls)
+  # 0xF04A = skip-previous
+  # 0xF04B = play
+  # 0xF04C = pause
+  # 0xF051 = skip-next
+  # 0xF028 = volume-high
+  # 0xF9C4 = speaker
+  # 0xF060 = arrow-left
+  - file: "https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/7.4.47/fonts/materialdesignicons-webfont.ttf"
     id: font_icons_36
     size: 36
     bpp: 4
     glyphs: [
-      '',  # skip-previous
-      '',  # play
-      '',  # pause
-      '',  # skip-next
-      '',  # volume-high
-      '龍',  # speaker
-      '', # arrow-left
+      0xF04A,
+      0xF04B,
+      0xF04C,
+      0xF051,
+      0xF028,
+      0xF9C4,
+      0xF060,
     ]
 
-  - file: "https://github.com/Templarian/MaterialDesign-Webfont/raw/master/fonts/materialdesignicons-webfont.ttf"
+  # MDI icons - 24px (small nav buttons)
+  - file: "https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/7.4.47/fonts/materialdesignicons-webfont.ttf"
     id: font_icons_24
     size: 24
     bpp: 4
     glyphs: [
-      '龍',  # speaker (small, for main page button)
-      '', # arrow-left
+      0xF9C4,
+      0xF060,
     ]
