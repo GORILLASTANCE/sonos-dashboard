@@ -1,0 +1,153 @@
+################################################################################
+# sensors.yaml
+# Home Assistant sensors that feed the UI.
+# All entity_ids reference the currently selected Sonos speaker,
+# tracked via the `selected_player` global in lvgl.yaml.
+#
+# IMPORTANT: Replace the entity IDs below with your actual Sonos entity IDs.
+# Find them in HA → Developer Tools → States, filter by "media_player.sonos"
+################################################################################
+
+globals:
+  # Persists across reboots — stores the active Sonos entity ID
+  - id: selected_player
+    type: std::string
+    restore_value: true
+    initial_value: '"media_player.sonos_living_room"'   # ← change to your default
+
+  # Cached volume 0-100 for display
+  - id: current_volume
+    type: int
+    restore_value: false
+    initial_value: "50"
+
+  # Track progress 0-100 for progress bar
+  - id: track_progress
+    type: int
+    restore_value: false
+    initial_value: "0"
+
+  # Play state: true = playing
+  - id: is_playing
+    type: bool
+    restore_value: false
+    initial_value: "false"
+
+# ── Media player state ────────────────────────────────────────────────────────
+# Each sensor watches a specific Sonos entity.
+# If you switch speakers via the picker, call homeassistant.action to update
+# the media_player_entity substitution. The simplest approach for 4-5 speakers
+# is one sensor per speaker, and use lambdas to route to the active one.
+# Here we use a single "active" approach driven by HA template sensors.
+# Set up a HA Template Sensor that mirrors whichever speaker is selected.
+# See README in the repo for the HA helper setup instructions.
+
+text_sensor:
+  # Song title — fed from HA input_text helper that mirrors selected speaker
+  - platform: homeassistant
+    id: media_title
+    entity_id: input_text.sonos_dashboard_title
+    on_value:
+      then:
+        - lvgl.label.update:
+            id: lbl_title
+            text: !lambda 'return x.c_str();'
+
+  # Artist name
+  - platform: homeassistant
+    id: media_artist
+    entity_id: input_text.sonos_dashboard_artist
+    on_value:
+      then:
+        - lvgl.label.update:
+            id: lbl_artist
+            text: !lambda 'return x.c_str();'
+
+  # Playback state: "playing" | "paused" | "idle" | "off"
+  - platform: homeassistant
+    id: media_state
+    entity_id: input_text.sonos_dashboard_state
+    on_value:
+      then:
+        - lambda: |-
+            id(is_playing) = (x == "playing");
+        - if:
+            condition:
+              lambda: 'return id(is_playing);'
+            then:
+              - lvgl.label.update:
+                  id: lbl_play_icon
+                  text: "\U000F04C"   # pause icon
+            else:
+              - lvgl.label.update:
+                  id: lbl_play_icon
+                  text: "\U000F04B"   # play icon
+
+  # Album art URL (used if you add online_image later)
+  - platform: homeassistant
+    id: media_artwork_url
+    entity_id: input_text.sonos_dashboard_artwork
+    internal: true
+
+sensor:
+  # Volume 0.0–1.0 from HA, converted to 0-100
+  - platform: homeassistant
+    id: media_volume
+    entity_id: input_number.sonos_dashboard_volume
+    on_value:
+      then:
+        - lambda: |-
+            id(current_volume) = (int)(x * 100.0f);
+        - lvgl.arc.update:
+            id: arc_volume
+            value: !lambda 'return id(current_volume);'
+        - lvgl.label.update:
+            id: lbl_volume
+            text: !lambda |
+              char buf[8];
+              snprintf(buf, sizeof(buf), "%d%%", id(current_volume));
+              return std::string(buf);
+
+  # Track progress 0.0–100.0
+  - platform: homeassistant
+    id: media_progress
+    entity_id: input_number.sonos_dashboard_progress
+    on_value:
+      then:
+        - lambda: |-
+            id(track_progress) = (int)x;
+        - lvgl.bar.update:
+            id: bar_progress
+            value: !lambda 'return id(track_progress);'
+
+  # Elapsed time in seconds
+  - platform: homeassistant
+    id: media_elapsed
+    entity_id: input_number.sonos_dashboard_elapsed
+    on_value:
+      then:
+        - lvgl.label.update:
+            id: lbl_elapsed
+            text: !lambda |
+              int secs = (int)x;
+              int m = secs / 60;
+              int s = secs % 60;
+              char buf[8];
+              snprintf(buf, sizeof(buf), "%d:%02d", m, s);
+              return std::string(buf);
+
+  # Total duration in seconds
+  - platform: homeassistant
+    id: media_duration
+    entity_id: input_number.sonos_dashboard_duration
+    on_value:
+      then:
+        - lvgl.label.update:
+            id: lbl_duration
+            text: !lambda |
+              int secs = (int)x;
+              int m = secs / 60;
+              int s = secs % 60;
+              char buf[8];
+              snprintf(buf, sizeof(buf), "%d:%02d", m, s);
+              return std::string(buf);
