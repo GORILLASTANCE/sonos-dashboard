@@ -1,6 +1,5 @@
 ################################################################################
 # fonts.yaml
-# Font definitions using Roboto + MDI icons via ESPHome's built-in MDI support
 ################################################################################
 
 font:
@@ -29,25 +28,25 @@ font:
     size: 48
     bpp: 4
 
-  # MDI icons 36px — using ESPHome built-in MDI font loader
-  - file: "https://github.com/Templarian/MaterialDesign-Webfont/raw/master/fonts/materialdesignicons-webfont.ttf"
+  # MDI icons 36px - tagged version URL, correct ESPHome glyph format
+  - file: "https://github.com/Templarian/MaterialDesign-Webfont/raw/v7.4.47/fonts/materialdesignicons-webfont.ttf"
     id: font_icons_36
     size: 36
     bpp: 4
     glyphs:
-      - "\U000F04A"  # mdi-skip-previous
-      - "\U000F04B"  # mdi-play
-      - "\U000F04C"  # mdi-pause
-      - "\U000F051"  # mdi-skip-next
-      - "\U000F028"  # mdi-volume-high
-      - "\U000F9C4"  # mdi-speaker
-      - "\U000F0060" # mdi-arrow-left
+      - "\U000F04A"
+      - "\U000F04B"
+      - "\U000F04C"
+      - "\U000F051"
+      - "\U000F028"
+      - "\U000F9C4"
+      - "\U000F0060"
 
   # MDI icons 24px
-  - file: "https://github.com/Templarian/MaterialDesign-Webfont/raw/master/fonts/materialdesignicons-webfont.ttf"
+  - file: "https://github.com/Templarian/MaterialDesign-Webfont/raw/v7.4.47/fonts/materialdesignicons-webfont.ttf"
     id: font_icons_24
     size: 24
     bpp: 4
     glyphs:
-      - "\U000F9C4"  # mdi-speaker
-      - "\U000F0060" # mdi-arrow-left
+      - "\U000F9C4"
+      - "\U000F0060"
