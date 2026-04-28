@@ -314,7 +314,7 @@ lvgl:
             x: 16
             y: -74
             width: 200
-            text: "Living Room"
+            text: "Inside Garage"
             text_font: font_sm
             text_color: 0x888888
 
@@ -374,16 +374,16 @@ lvgl:
               - label:
                   id: lbl_spk_1
                   align: CENTER
-                  text: "Living Room"     # ← your room name
+                  text: "Kitchen"
                   text_font: font_picker
                   text_color: 0xFFFFFF
             on_click:
               then:
                 - lambda: |-
-                    id(selected_player) = "media_player.sonos_living_room";  # ← your entity
+                    id(selected_player) = "media_player.kitchen";
                 - lvgl.label.update:
                     id: lbl_active_speaker
-                    text: "Living Room"
+                    text: "Kitchen"
                 - script.execute: update_picker_highlight
                 - lvgl.page.show:
                     id: main_page
@@ -403,16 +403,16 @@ lvgl:
               - label:
                   id: lbl_spk_2
                   align: CENTER
-                  text: "Kitchen"         # ← your room name
+                  text: "Inside Garage"
                   text_font: font_picker
                   text_color: 0xFFFFFF
             on_click:
               then:
                 - lambda: |-
-                    id(selected_player) = "media_player.sonos_kitchen";      # ← your entity
+                    id(selected_player) = "media_player.family_room";
                 - lvgl.label.update:
                     id: lbl_active_speaker
-                    text: "Kitchen"
+                    text: "Inside Garage"
                 - script.execute: update_picker_highlight
                 - lvgl.page.show:
                     id: main_page
@@ -432,16 +432,16 @@ lvgl:
               - label:
                   id: lbl_spk_3
                   align: CENTER
-                  text: "Bedroom"         # ← your room name
+                  text: "Outside Garage"
                   text_font: font_picker
                   text_color: 0xFFFFFF
             on_click:
               then:
                 - lambda: |-
-                    id(selected_player) = "media_player.sonos_bedroom";      # ← your entity
+                    id(selected_player) = "media_player.outside_garage";
                 - lvgl.label.update:
                     id: lbl_active_speaker
-                    text: "Bedroom"
+                    text: "Outside Garage"
                 - script.execute: update_picker_highlight
                 - lvgl.page.show:
                     id: main_page
@@ -461,16 +461,16 @@ lvgl:
               - label:
                   id: lbl_spk_4
                   align: CENTER
-                  text: "Office"          # ← your room name
+                  text: "Sonos Move"
                   text_font: font_picker
                   text_color: 0xFFFFFF
             on_click:
               then:
                 - lambda: |-
-                    id(selected_player) = "media_player.sonos_office";       # ← your entity
+                    id(selected_player) = "media_player.unnamed_room_5";
                 - lvgl.label.update:
                     id: lbl_active_speaker
-                    text: "Office"
+                    text: "Sonos Move"
                 - script.execute: update_picker_highlight
                 - lvgl.page.show:
                     id: main_page
@@ -490,16 +490,16 @@ lvgl:
               - label:
                   id: lbl_spk_5
                   align: CENTER
-                  text: "Patio"           # ← your room name
+                  text: "Floating Roam"
                   text_font: font_picker
                   text_color: 0xFFFFFF
             on_click:
               then:
                 - lambda: |-
-                    id(selected_player) = "media_player.sonos_patio";        # ← your entity
+                    id(selected_player) = "media_player.sonos_roam";
                 - lvgl.label.update:
                     id: lbl_active_speaker
-                    text: "Patio"
+                    text: "Floating Roam"
                 - script.execute: update_picker_highlight
                 - lvgl.page.show:
                     id: main_page
@@ -518,11 +518,11 @@ script:
             const char* entity;
           };
           Entry entries[] = {
-            { id(btn_spk_1), id(lbl_spk_1), "media_player.sonos_living_room" },
-            { id(btn_spk_2), id(lbl_spk_2), "media_player.sonos_kitchen" },
-            { id(btn_spk_3), id(lbl_spk_3), "media_player.sonos_bedroom" },
-            { id(btn_spk_4), id(lbl_spk_4), "media_player.sonos_office" },
-            { id(btn_spk_5), id(lbl_spk_5), "media_player.sonos_patio" },
+            { id(btn_spk_1), id(lbl_spk_1), "media_player.kitchen" },
+            { id(btn_spk_2), id(lbl_spk_2), "media_player.family_room" },
+            { id(btn_spk_3), id(lbl_spk_3), "media_player.outside_garage" },
+            { id(btn_spk_4), id(lbl_spk_4), "media_player.unnamed_room_5" },
+            { id(btn_spk_5), id(lbl_spk_5), "media_player.sonos_roam" },
           };
           std::string active = id(selected_player);
           for (auto& e : entries) {
