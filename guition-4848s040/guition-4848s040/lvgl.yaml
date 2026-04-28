@@ -1,0 +1,536 @@
+################################################################################
+# lvgl.yaml
+# Full UI for the Sonos dashboard.
+# Two pages:
+#   1. main_page  — album art placeholder, track info, controls, progress
+#   2. picker_page — speaker selector with 5 slots
+#
+# Color palette (dark theme):
+#   Background:   0x0D0D0D  (near black)
+#   Surface:      0x1A1A1A  (dark grey cards)
+#   Primary:      0xFFFFFF  (white text)
+#   Secondary:    0x888888  (grey text)
+#   Accent:       0x1ED760  (Spotify-inspired green for active states)
+#   Button:       0x2A2A2A  (button background)
+#   Button press: 0x3A3A3A
+################################################################################
+
+lvgl:
+  displays:
+    - main_display
+  touchscreens:
+    - touch_screen
+
+  # ── Global style defaults ───────────────────────────────────────────────────
+  theme:
+    button:
+      bg_color: 0x2A2A2A
+      border_width: 0
+      radius: 12
+      text_color: 0xFFFFFF
+      pressed:
+        bg_color: 0x3A3A3A
+
+  style_definitions:
+    # Card / panel background
+    - id: style_card
+      bg_color: 0x1A1A1A
+      bg_opa: COVER
+      border_width: 0
+      radius: 16
+      pad_all: 0
+
+    # Active speaker button (green)
+    - id: style_btn_active
+      bg_color: 0x1ED760
+      text_color: 0x000000
+      radius: 14
+
+    # Inactive speaker button
+    - id: style_btn_inactive
+      bg_color: 0x2A2A2A
+      text_color: 0xFFFFFF
+      radius: 14
+
+    # Progress bar track
+    - id: style_bar_bg
+      bg_color: 0x2A2A2A
+      radius: 4
+
+    # Progress bar fill
+    - id: style_bar_fill
+      bg_color: 0xFFFFFF
+      radius: 4
+
+    # Volume arc background
+    - id: style_arc_bg
+      arc_color: 0x2A2A2A
+      arc_width: 8
+
+    # Volume arc indicator
+    - id: style_arc_fill
+      arc_color: 0x1ED760
+      arc_width: 8
+
+  # ── Pages ───────────────────────────────────────────────────────────────────
+  pages:
+
+    # ──────────────────────────────────────────────────────────────────────────
+    # PAGE 1: Main player
+    # Layout (480x480):
+    #   [0,0]─────────────────────────────────[480,0]
+    #     Album art placeholder  240x240  (top-left area, with margin)
+    #     Track title            (right of art)
+    #     Artist                 (right of art, below title)
+    #     Progress bar           (full width, below art)
+    #     Elapsed / Duration     (flanking progress bar)
+    #     Prev | Play | Next     (bottom center row)
+    #     Volume arc             (bottom right)
+    #     Speaker picker btn     (bottom left, small)
+    # ──────────────────────────────────────────────────────────────────────────
+    - id: main_page
+      bg_color: 0x0D0D0D
+
+      widgets:
+
+        # ── Album art placeholder ──────────────────────────────────────────
+        - obj:
+            id: album_art_box
+            styles: style_card
+            x: 16
+            y: 16
+            width: 220
+            height: 220
+            bg_color: 0x1A1A1A
+            widgets:
+              # Music note placeholder text (shown when no art available)
+              - label:
+                  align: CENTER
+                  text: "♪"
+                  text_font: font_xl
+                  text_color: 0x444444
+
+        # ── Track title ────────────────────────────────────────────────────
+        - label:
+            id: lbl_title
+            x: 248
+            y: 24
+            width: 216
+            height: 80
+            text: "Not Playing"
+            text_font: font_lg
+            text_color: 0xFFFFFF
+            long_mode: WRAP
+
+        # ── Artist ────────────────────────────────────────────────────────
+        - label:
+            id: lbl_artist
+            x: 248
+            y: 110
+            width: 216
+            height: 40
+            text: "—"
+            text_font: font_md
+            text_color: 0x888888
+            long_mode: DOT
+
+        # ── Volume arc ────────────────────────────────────────────────────
+        - arc:
+            id: arc_volume
+            x: 250
+            y: 148
+            width: 120
+            height: 120
+            min_value: 0
+            max_value: 100
+            value: 50
+            start_angle: 135
+            end_angle: 45
+            arc_color: 0x1ED760
+            indicator:
+              arc_color: 0x1ED760
+              arc_width: 8
+            background:
+              arc_color: 0x2A2A2A
+              arc_width: 8
+            knob:
+              bg_color: 0x1ED760
+              radius: 6
+              pad_all: 2
+            on_value:
+              then:
+                - homeassistant.action:
+                    action: media_player.volume_set
+                    data:
+                      entity_id: !lambda 'return id(selected_player);'
+                      volume_level: !lambda 'return x / 100.0f;'
+
+        # Volume % label inside arc
+        - label:
+            id: lbl_volume
+            align: TOP_LEFT
+            x: 293
+            y: 223
+            text: "50%"
+            text_font: font_sm
+            text_color: 0x888888
+
+        # ── Progress bar ──────────────────────────────────────────────────
+        - bar:
+            id: bar_progress
+            x: 16
+            y: 252
+            width: 448
+            height: 6
+            min_value: 0
+            max_value: 100
+            value: 0
+            indicator:
+              bg_color: 0xFFFFFF
+              radius: 3
+            bg_color: 0x2A2A2A
+            radius: 3
+
+        # ── Elapsed time ──────────────────────────────────────────────────
+        - label:
+            id: lbl_elapsed
+            x: 16
+            y: 264
+            text: "0:00"
+            text_font: font_sm
+            text_color: 0x888888
+
+        # ── Duration ──────────────────────────────────────────────────────
+        - label:
+            id: lbl_duration
+            align: TOP_RIGHT
+            x: -16
+            y: 264
+            text: "0:00"
+            text_font: font_sm
+            text_color: 0x888888
+
+        # ── Playback controls ─────────────────────────────────────────────
+        # Previous
+        - button:
+            id: btn_prev
+            align: BOTTOM_MID
+            x: -120
+            y: -60
+            width: 72
+            height: 72
+            radius: 36
+            bg_color: 0x2A2A2A
+            widgets:
+              - label:
+                  align: CENTER
+                  text: "\U000F04A"
+                  text_font: font_icons_36
+                  text_color: 0xFFFFFF
+            on_click:
+              then:
+                - homeassistant.action:
+                    action: media_player.media_previous_track
+                    data:
+                      entity_id: !lambda 'return id(selected_player);'
+
+        # Play / Pause (larger)
+        - button:
+            id: btn_play
+            align: BOTTOM_MID
+            x: 0
+            y: -52
+            width: 88
+            height: 88
+            radius: 44
+            bg_color: 0xFFFFFF
+            pressed:
+              bg_color: 0xCCCCCC
+            widgets:
+              - label:
+                  id: lbl_play_icon
+                  align: CENTER
+                  text: "\U000F04B"
+                  text_font: font_icons_36
+                  text_color: 0x000000
+            on_click:
+              then:
+                - homeassistant.action:
+                    action: media_player.media_play_pause
+                    data:
+                      entity_id: !lambda 'return id(selected_player);'
+
+        # Next
+        - button:
+            id: btn_next
+            align: BOTTOM_MID
+            x: 120
+            y: -60
+            width: 72
+            height: 72
+            radius: 36
+            bg_color: 0x2A2A2A
+            widgets:
+              - label:
+                  align: CENTER
+                  text: "\U000F051"
+                  text_font: font_icons_36
+                  text_color: 0xFFFFFF
+            on_click:
+              then:
+                - homeassistant.action:
+                    action: media_player.media_next_track
+                    data:
+                      entity_id: !lambda 'return id(selected_player);'
+
+        # ── Speaker picker open button (bottom-left) ───────────────────────
+        - button:
+            id: btn_open_picker
+            align: BOTTOM_LEFT
+            x: 16
+            y: -16
+            width: 52
+            height: 52
+            radius: 26
+            bg_color: 0x2A2A2A
+            widgets:
+              - label:
+                  align: CENTER
+                  text: "\U000F9C4"
+                  text_font: font_icons_24
+                  text_color: 0xFFFFFF
+            on_click:
+              then:
+                - script.execute: update_picker_highlight
+                - lvgl.page.show:
+                    id: picker_page
+                    animation: MOVE_LEFT
+                    time: 250ms
+
+        # ── Active speaker name label (bottom-left, above picker button) ───
+        - label:
+            id: lbl_active_speaker
+            align: BOTTOM_LEFT
+            x: 16
+            y: -74
+            width: 200
+            text: "Inside Garage"
+            text_font: font_sm
+            text_color: 0x888888
+
+    # ──────────────────────────────────────────────────────────────────────────
+    # PAGE 2: Speaker Picker
+    # Full-screen list of 5 Sonos speakers.
+    # Active speaker highlighted in green.
+    # Back arrow returns to main page.
+    #
+    # *** CUSTOMIZE: Change room names and entity IDs to match your setup ***
+    # ──────────────────────────────────────────────────────────────────────────
+    - id: picker_page
+      bg_color: 0x0D0D0D
+
+      widgets:
+
+        # Title
+        - label:
+            align: TOP_MID
+            y: 24
+            text: "Choose Speaker"
+            text_font: font_lg
+            text_color: 0xFFFFFF
+
+        # Back button
+        - button:
+            align: TOP_LEFT
+            x: 16
+            y: 16
+            width: 52
+            height: 52
+            radius: 26
+            bg_color: 0x2A2A2A
+            widgets:
+              - label:
+                  align: CENTER
+                  text: "\U000F0060"
+                  text_font: font_icons_24
+                  text_color: 0xFFFFFF
+            on_click:
+              then:
+                - lvgl.page.show:
+                    id: main_page
+                    animation: MOVE_RIGHT
+                    time: 250ms
+
+        # ── Speaker 1 ──────────────────────────────────────────────────────
+        - button:
+            id: btn_spk_1
+            align: TOP_MID
+            y: 90
+            width: 420
+            height: 64
+            radius: 14
+            bg_color: 0x2A2A2A
+            widgets:
+              - label:
+                  id: lbl_spk_1
+                  align: CENTER
+                  text: "Kitchen"
+                  text_font: font_picker
+                  text_color: 0xFFFFFF
+            on_click:
+              then:
+                - lambda: |-
+                    id(selected_player) = "media_player.kitchen";
+                - lvgl.label.update:
+                    id: lbl_active_speaker
+                    text: "Kitchen"
+                - script.execute: update_picker_highlight
+                - lvgl.page.show:
+                    id: main_page
+                    animation: MOVE_RIGHT
+                    time: 250ms
+
+        # ── Speaker 2 ──────────────────────────────────────────────────────
+        - button:
+            id: btn_spk_2
+            align: TOP_MID
+            y: 166
+            width: 420
+            height: 64
+            radius: 14
+            bg_color: 0x2A2A2A
+            widgets:
+              - label:
+                  id: lbl_spk_2
+                  align: CENTER
+                  text: "Inside Garage"
+                  text_font: font_picker
+                  text_color: 0xFFFFFF
+            on_click:
+              then:
+                - lambda: |-
+                    id(selected_player) = "media_player.family_room";
+                - lvgl.label.update:
+                    id: lbl_active_speaker
+                    text: "Inside Garage"
+                - script.execute: update_picker_highlight
+                - lvgl.page.show:
+                    id: main_page
+                    animation: MOVE_RIGHT
+                    time: 250ms
+
+        # ── Speaker 3 ──────────────────────────────────────────────────────
+        - button:
+            id: btn_spk_3
+            align: TOP_MID
+            y: 242
+            width: 420
+            height: 64
+            radius: 14
+            bg_color: 0x2A2A2A
+            widgets:
+              - label:
+                  id: lbl_spk_3
+                  align: CENTER
+                  text: "Outside Garage"
+                  text_font: font_picker
+                  text_color: 0xFFFFFF
+            on_click:
+              then:
+                - lambda: |-
+                    id(selected_player) = "media_player.outside_garage";
+                - lvgl.label.update:
+                    id: lbl_active_speaker
+                    text: "Outside Garage"
+                - script.execute: update_picker_highlight
+                - lvgl.page.show:
+                    id: main_page
+                    animation: MOVE_RIGHT
+                    time: 250ms
+
+        # ── Speaker 4 ──────────────────────────────────────────────────────
+        - button:
+            id: btn_spk_4
+            align: TOP_MID
+            y: 318
+            width: 420
+            height: 64
+            radius: 14
+            bg_color: 0x2A2A2A
+            widgets:
+              - label:
+                  id: lbl_spk_4
+                  align: CENTER
+                  text: "Sonos Move"
+                  text_font: font_picker
+                  text_color: 0xFFFFFF
+            on_click:
+              then:
+                - lambda: |-
+                    id(selected_player) = "media_player.unnamed_room_5";
+                - lvgl.label.update:
+                    id: lbl_active_speaker
+                    text: "Sonos Move"
+                - script.execute: update_picker_highlight
+                - lvgl.page.show:
+                    id: main_page
+                    animation: MOVE_RIGHT
+                    time: 250ms
+
+        # ── Speaker 5 ──────────────────────────────────────────────────────
+        - button:
+            id: btn_spk_5
+            align: TOP_MID
+            y: 394
+            width: 420
+            height: 64
+            radius: 14
+            bg_color: 0x2A2A2A
+            widgets:
+              - label:
+                  id: lbl_spk_5
+                  align: CENTER
+                  text: "Floating Roam"
+                  text_font: font_picker
+                  text_color: 0xFFFFFF
+            on_click:
+              then:
+                - lambda: |-
+                    id(selected_player) = "media_player.sonos_roam";
+                - lvgl.label.update:
+                    id: lbl_active_speaker
+                    text: "Floating Roam"
+                - script.execute: update_picker_highlight
+                - lvgl.page.show:
+                    id: main_page
+                    animation: MOVE_RIGHT
+                    time: 250ms
+
+# ── Script: highlight active speaker button ────────────────────────────────────
+script:
+  - id: update_picker_highlight
+    then:
+      - lambda: |-
+          // Map of button widget pointers and their entity IDs
+          struct Entry {
+            lv_obj_t* btn;
+            lv_obj_t* lbl;
+            const char* entity;
+          };
+          Entry entries[] = {
+            { id(btn_spk_1), id(lbl_spk_1), "media_player.kitchen" },
+            { id(btn_spk_2), id(lbl_spk_2), "media_player.family_room" },
+            { id(btn_spk_3), id(lbl_spk_3), "media_player.outside_garage" },
+            { id(btn_spk_4), id(lbl_spk_4), "media_player.unnamed_room_5" },
+            { id(btn_spk_5), id(lbl_spk_5), "media_player.sonos_roam" },
+          };
+          std::string active = id(selected_player);
+          for (auto& e : entries) {
+            bool is_active = (active == e.entity);
+            lv_obj_set_style_bg_color(e.btn,
+              is_active ? lv_color_hex(0x1ED760) : lv_color_hex(0x2A2A2A),
+              LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_text_color(e.lbl,
+              is_active ? lv_color_hex(0x000000) : lv_color_hex(0xFFFFFF),
+              LV_PART_MAIN | LV_STATE_DEFAULT);
+          }
