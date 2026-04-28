@@ -28,18 +28,19 @@ font:
     size: 48
     bpp: 4
 
-  # MDI icons 36px - tagged version URL, correct ESPHome glyph format
+  # MDI icons 36px
+  # \U requires exactly 8 hex digits in YAML
   - file: "https://github.com/Templarian/MaterialDesign-Webfont/raw/v7.4.47/fonts/materialdesignicons-webfont.ttf"
     id: font_icons_36
     size: 36
     bpp: 4
     glyphs:
-      - "\U000F04A"
-      - "\U000F04B"
-      - "\U000F04C"
-      - "\U000F051"
-      - "\U000F028"
-      - "\U000F9C4"
+      - "\U000F004A"
+      - "\U000F004B"
+      - "\U000F004C"
+      - "\U000F0051"
+      - "\U000F0028"
+      - "\U000F09C4"
       - "\U000F0060"
 
   # MDI icons 24px
@@ -48,5 +49,5 @@ font:
     size: 24
     bpp: 4
     glyphs:
-      - "\U000F9C4"
+      - "\U000F09C4"
       - "\U000F0060"
