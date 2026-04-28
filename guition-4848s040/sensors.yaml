@@ -77,11 +77,11 @@ text_sensor:
             then:
               - lvgl.label.update:
                   id: lbl_play_icon
-                  text: "\U000F04C"   # pause icon
+                  text: ''   # pause icon
             else:
               - lvgl.label.update:
                   id: lbl_play_icon
-                  text: "\U000F04B"   # play icon
+                  text: ''   # play icon
 
   # Album art URL (used if you add online_image later)
   - platform: homeassistant
