@@ -53,13 +53,13 @@ font:
     size: 36
     bpp: 4
     glyphs: [
-      "\U000F04A",  # skip-previous
-      "\U000F04B",  # play
-      "\U000F04C",  # pause
-      "\U000F051",  # skip-next
-      "\U000F028",  # volume-high
-      "\U000F9C4",  # speaker
-      "\U000F0060", # arrow-left
+      '',  # skip-previous
+      '',  # play
+      '',  # pause
+      '',  # skip-next
+      '',  # volume-high
+      '龍',  # speaker
+      '', # arrow-left
     ]
 
   - file: "https://github.com/Templarian/MaterialDesign-Webfont/raw/master/fonts/materialdesignicons-webfont.ttf"
@@ -67,6 +67,6 @@ font:
     size: 24
     bpp: 4
     glyphs: [
-      "\U000F9C4",  # speaker (small, for main page button)
-      "\U000F0060", # arrow-left
+      '龍',  # speaker (small, for main page button)
+      '', # arrow-left
     ]
