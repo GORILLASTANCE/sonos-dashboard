@@ -1,6 +1,6 @@
 ################################################################################
 # fonts.yaml
-# Font definitions using Roboto + MDI icons
+# Font definitions using Roboto + MDI icons via ESPHome's built-in MDI support
 ################################################################################
 
 font:
@@ -29,18 +29,25 @@ font:
     size: 48
     bpp: 4
 
-  # MDI icons 36px
-  # 0xF04A=skip-prev 0xF04B=play 0xF04C=pause
-  # 0xF051=skip-next 0xF028=volume 0xF9C4=speaker 0xF060=arrow-left
-  - file: "https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/7.4.47/fonts/materialdesignicons-webfont.ttf"
+  # MDI icons 36px — using ESPHome built-in MDI font loader
+  - file: "https://github.com/Templarian/MaterialDesign-Webfont/raw/master/fonts/materialdesignicons-webfont.ttf"
     id: font_icons_36
     size: 36
     bpp: 4
-    glyphs: ["\uf04a", "\uf04b", "\uf04c", "\uf051", "\uf028", "\uf9c4", "\uf060"]
+    glyphs:
+      - "\U000F04A"  # mdi-skip-previous
+      - "\U000F04B"  # mdi-play
+      - "\U000F04C"  # mdi-pause
+      - "\U000F051"  # mdi-skip-next
+      - "\U000F028"  # mdi-volume-high
+      - "\U000F9C4"  # mdi-speaker
+      - "\U000F0060" # mdi-arrow-left
 
   # MDI icons 24px
-  - file: "https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/7.4.47/fonts/materialdesignicons-webfont.ttf"
+  - file: "https://github.com/Templarian/MaterialDesign-Webfont/raw/master/fonts/materialdesignicons-webfont.ttf"
     id: font_icons_24
     size: 24
     bpp: 4
-    glyphs: ["\uf9c4", "\uf060"]
+    glyphs:
+      - "\U000F9C4"  # mdi-speaker
+      - "\U000F0060" # mdi-arrow-left
