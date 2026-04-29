@@ -1,7 +1,7 @@
 ################################################################################
 # board.yaml
 # Hardware configuration for Guition ESP32-S3-4848S040
-# Based on official ESPHome device config - minimal sdkconfig
+# flash_mode: dio is critical - qio causes boot crashes on this board
 ################################################################################
 
 esp32:
@@ -10,11 +10,15 @@ esp32:
   framework:
     type: esp-idf
 
+esphome:
+  platformio_options:
+    board_build.flash_mode: dio
+
 psram:
   mode: octal
   speed: 80MHz
 
-# SPI bus for ST7701S init
+# SPI bus for ST7701S init (MODE3 required)
 spi:
   - id: lcd_spi
     clk_pin: GPIO48
@@ -44,16 +48,16 @@ light:
     restore_mode: ALWAYS_ON
     default_transition_length: 500ms
 
-# ST7701S display
+# ST7701S display - confirmed working config for 4848S040
 display:
   - platform: st7701s
     id: main_display
     update_interval: never
     auto_clear_enabled: false
+    spi_mode: MODE3
+    data_rate: 2MHz
     color_order: RGB
     invert_colors: false
-    pclk_frequency: 12MHz
-    pclk_inverted: false
     dimensions:
       width: 480
       height: 480
@@ -62,20 +66,23 @@ display:
     hsync_pin: GPIO16
     vsync_pin: GPIO17
     pclk_pin: GPIO21
+    pclk_frequency: 12MHz
+    pclk_inverted: false
     hsync_pulse_width: 8
     hsync_front_porch: 10
     hsync_back_porch: 20
     vsync_pulse_width: 8
     vsync_front_porch: 10
     vsync_back_porch: 10
-    data_pins:
-      red:   [ GPIO4,  GPIO5,  GPIO6,  GPIO7,  GPIO15 ]
-      green: [ GPIO8,  GPIO20, GPIO3,  GPIO46, GPIO9,  GPIO10 ]
-      blue:  [ GPIO11, GPIO12, GPIO13, GPIO14, GPIO0  ]
     init_sequence:
       - 1
-      - [ 0xFF, 0x77, 0x01, 0x00, 0x00, 0x10 ]
-      - [ 0xCD, 0x00 ]
+      - [0xFF, 0x77, 0x01, 0x00, 0x00, 0x10]
+      - [0xCD, 0x00]
+      - [0x3A, 0x50]   # RGB565 color mode fix
+    data_pins:
+      red:   [GPIO11, GPIO12, GPIO13, GPIO14, GPIO0]
+      green: [GPIO8,  GPIO20, GPIO3,  GPIO46, GPIO9, GPIO10]
+      blue:  [GPIO4,  GPIO5,  GPIO6,  GPIO7,  GPIO15]
 
 # GT911 capacitive touch
 touchscreen:
