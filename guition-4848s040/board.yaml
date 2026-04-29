@@ -1,8 +1,7 @@
 ################################################################################
 # board.yaml
 # Hardware configuration for Guition ESP32-S3-4848S040
-# 480x480 ST7701S display, GT911 touch, LEDC backlight
-# Compatible with ESPHome 2026.x
+# Based on official ESPHome device config - minimal sdkconfig
 ################################################################################
 
 esp32:
@@ -10,20 +9,12 @@ esp32:
   variant: esp32s3
   framework:
     type: esp-idf
-    sdkconfig_options:
-      CONFIG_ESP32S3_DEFAULT_CPU_FREQ_240: "y"
-      CONFIG_ESP32S3_DATA_CACHE_64KB: "y"
-      CONFIG_ESP32S3_DATA_CACHE_LINE_64B: "y"
-      CONFIG_SPIRAM_FETCH_INSTRUCTIONS: "y"
-      CONFIG_SPIRAM_RODATA: "y"
-      CONFIG_ESP_PHY_ENABLE_USB: "n"
-      CONFIG_USJ_ENABLE_USB_SERIAL_JTAG: "n"
 
 psram:
   mode: octal
   speed: 80MHz
 
-# SPI bus for ST7701S init sequence
+# SPI bus for ST7701S init
 spi:
   - id: lcd_spi
     clk_pin: GPIO48
